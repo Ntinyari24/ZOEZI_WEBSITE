@@ -1,0 +1,161 @@
+body {
+      background: linear-gradient(135deg, #e0f4e4 30%, #e5f251);
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .navbar {
+      background-color: #1a1a1a;
+    }
+
+    .navbar-brand,
+    .nav-link {
+      color: #d4af37 !important;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #ffffff !important;
+    }
+
+    h2,
+    h4, h5 {
+      color: #d4af37;
+      font-weight: bold;
+    }
+
+    #home {
+      background-image: url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+
+    #home h2 {
+      font-size: 3rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    }
+
+    #home p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+    }
+
+    .blog-content h4 {
+      margin-top: 1.5rem;
+      font-weight: bold;
+    }
+
+    .lead {
+      font-size: 1.1rem;
+      color: #5c5c5c;
+    }
+
+    .card {
+      border: none;
+      border-radius: 8px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .card-header {
+      font-weight: bold;
+      color: #d4af37;
+    }
+
+    .card-body {
+      color: #ffffff;
+    }
+
+    .text-bg-primary,
+    .text-bg-secondary,
+    .text-bg-success,
+    .text-bg-danger,
+    .text-bg-warning,
+    .text-bg-info,
+    .text-bg-light,
+    .text-bg-dark {
+      color: #fafffe !important;
+    }
+
+    .text-bg-light {
+      background-color: #f0b953 !important;
+    }
+
+    input,
+    textarea {
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #d4af37, #ffb347);
+      color: #000;
+      border: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #ffecb3, #ff9800);
+      transform: scale(1.05);
+    }
+
+    section {
+      padding: 60px 0;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .text-dark:hover {
+      color: #d4af37 !important;
+      transform: scale(1.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .ribbed-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .blog-content {
+      background-color: #fffefc;
+      padding: 20px;
+      border-left: 4px solid #d4af37;
+      border-radius: 8px;
+    }
+
+   footer {
+  background-color: #854f4f;
+  color: green;
+  padding: 20px 0;
+  text-align: center;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+footer a {
+  color: #d4af37;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  margin-bottom: 50px;
+}
+
+footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
