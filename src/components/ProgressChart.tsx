@@ -1,13 +1,12 @@
 
 import { Card } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Activity, Heart } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { TrendingUp, Activity, Timer } from 'lucide-react';
 
 interface Workout {
   id: number;
   type: string;
   duration: number;
-  calories: number;
   date: string;
 }
 
@@ -21,12 +20,12 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
     const existingDay = acc.find(day => day.date === workout.date);
     if (existingDay) {
       existingDay.duration += workout.duration;
-      existingDay.calories += workout.calories;
+      existingDay.workouts += 1;
     } else {
       acc.push({
         date: workout.date,
         duration: workout.duration,
-        calories: workout.calories
+        workouts: 1
       });
     }
     return acc;
@@ -37,8 +36,9 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
     const existing = acc.find(item => item.name === workout.type);
     if (existing) {
       existing.value += 1;
+      existing.totalDuration += workout.duration;
     } else {
-      acc.push({ name: workout.type, value: 1 });
+      acc.push({ name: workout.type, value: 1, totalDuration: workout.duration });
     }
     return acc;
   }, []);
@@ -74,7 +74,7 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
               />
               <YAxis tick={{ fontSize: 12 }} />
               <Tooltip 
-                formatter={(value, name) => [value, name === 'duration' ? 'Minutes' : 'Calories']}
+                formatter={(value, name) => [value, name === 'duration' ? 'Minutes' : 'Workouts']}
                 labelFormatter={(value) => new Date(value).toLocaleDateString()}
               />
               <Bar dataKey="duration" fill="#3B82F6" radius={[4, 4, 0, 0]} />
@@ -82,14 +82,14 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
           </ResponsiveContainer>
         </Card>
 
-        {/* Calories Trend */}
+        {/* Workout Frequency */}
         <Card className="p-6 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center mb-6">
-            <Heart className="w-6 h-6 mr-2 text-red-500" />
-            <h3 className="text-xl font-semibold">Calories Burned</h3>
+            <Timer className="w-6 h-6 mr-2 text-green-500" />
+            <h3 className="text-xl font-semibold">Weekly Frequency</h3>
           </div>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={dailyData}>
+            <BarChart data={dailyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis 
                 dataKey="date" 
@@ -98,24 +98,18 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
               />
               <YAxis tick={{ fontSize: 12 }} />
               <Tooltip 
-                formatter={(value) => [value, 'Calories']}
+                formatter={(value) => [value, 'Workouts']}
                 labelFormatter={(value) => new Date(value).toLocaleDateString()}
               />
-              <Line 
-                type="monotone" 
-                dataKey="calories" 
-                stroke="#EF4444" 
-                strokeWidth={3}
-                dot={{ fill: '#EF4444', strokeWidth: 2, r: 6 }}
-              />
-            </LineChart>
+              <Bar dataKey="workouts" fill="#10B981" radius={[4, 4, 0, 0]} />
+            </BarChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Workout Distribution */}
         <Card className="p-6 hover:shadow-lg transition-all duration-300 lg:col-span-2">
           <div className="flex items-center mb-6">
-            <TrendingUp className="w-6 h-6 mr-2 text-green-500" />
+            <TrendingUp className="w-6 h-6 mr-2 text-purple-500" />
             <h3 className="text-xl font-semibold">Workout Distribution</h3>
           </div>
           <div className="flex flex-col lg:flex-row items-center">
@@ -135,7 +129,10 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip formatter={(value, name, props) => [
+                  `${value} sessions (${props.payload.totalDuration} min total)`, 
+                  name
+                ]} />
               </PieChart>
             </ResponsiveContainer>
             <div className="lg:ml-8 mt-4 lg:mt-0">
@@ -147,7 +144,7 @@ const ProgressChart = ({ workouts }: ProgressChartProps) => {
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     ></div>
                     <span className="text-sm font-medium">{entry.name}</span>
-                    <span className="text-sm text-gray-500">({entry.value} sessions)</span>
+                    <span className="text-sm text-gray-500">({entry.value} sessions, {entry.totalDuration}min)</span>
                   </div>
                 ))}
               </div>

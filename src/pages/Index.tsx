@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Heart, Timer, TrendingUp, Calendar, Star } from 'lucide-react';
+import { Activity, Timer, TrendingUp, Calendar, Star } from 'lucide-react';
 import WorkoutLogger from '@/components/WorkoutLogger';
 import ProgressChart from '@/components/ProgressChart';
 import DashboardStats from '@/components/DashboardStats';
@@ -13,9 +13,9 @@ import HeroSection from '@/components/HeroSection';
 const Index = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [workouts, setWorkouts] = useState([
-    { id: 1, type: 'Running', duration: 30, calories: 250, date: '2024-07-07' },
-    { id: 2, type: 'Weight Training', duration: 45, calories: 180, date: '2024-07-06' },
-    { id: 3, type: 'Cycling', duration: 60, calories: 320, date: '2024-07-05' },
+    { id: 1, type: 'Running', duration: 30, date: '2024-07-07' },
+    { id: 2, type: 'Weight Training', duration: 45, date: '2024-07-06' },
+    { id: 3, type: 'Cycling', duration: 60, date: '2024-07-05' },
   ]);
 
   const addWorkout = (workout: any) => {
@@ -115,8 +115,8 @@ const Index = () => {
                     <div className="text-right">
                       <p className="font-medium">{workout.duration} min</p>
                       <p className="text-sm text-gray-500 flex items-center">
-                        <Heart className="w-3 h-3 mr-1" />
-                        {workout.calories} cal
+                        <Timer className="w-3 h-3 mr-1" />
+                        Duration
                       </p>
                     </div>
                   </div>

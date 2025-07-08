@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { Activity, Timer, Heart } from 'lucide-react';
+import { Activity, Timer, Utensils } from 'lucide-react';
 
 interface WorkoutLoggerProps {
   onAddWorkout: (workout: any) => void;
@@ -15,8 +15,7 @@ interface WorkoutLoggerProps {
 const WorkoutLogger = ({ onAddWorkout }: WorkoutLoggerProps) => {
   const [workout, setWorkout] = useState({
     type: '',
-    duration: '',
-    calories: ''
+    duration: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,10 +23,92 @@ const WorkoutLogger = ({ onAddWorkout }: WorkoutLoggerProps) => {
     'Running', 'Cycling', 'Weight Training', 'Swimming', 'Yoga', 'Walking', 'HIIT', 'Pilates', 'Boxing', 'Dancing'
   ];
 
+  const getMealPlan = (workoutType: string) => {
+    const mealPlans: { [key: string]: string[] } = {
+      'Running': [
+        'Pre-workout: Banana with almond butter',
+        'Post-workout: Greek yogurt with berries',
+        'Hydration: Electrolyte drink during long runs'
+      ],
+      'Weight Training': [
+        'Pre-workout: Oatmeal with protein powder',
+        'Post-workout: Protein shake with banana',
+        'Recovery: Lean protein with quinoa'
+      ],
+      'Swimming': [
+        'Pre-workout: Light carbs like toast',
+        'Post-workout: Chocolate milk for recovery',
+        'Hydration: Water before, during, and after'
+      ],
+      'Cycling': [
+        'Pre-workout: Energy bar or dates',
+        'During: Sports drink for long rides',
+        'Post-workout: Recovery smoothie'
+      ],
+      'Yoga': [
+        'Pre-workout: Light snack if needed',
+        'Post-workout: Herbal tea with nuts',
+        'Focus: Stay hydrated throughout'
+      ],
+      'HIIT': [
+        'Pre-workout: Small portion of carbs',
+        'Post-workout: Protein-rich meal',
+        'Recovery: Anti-inflammatory foods'
+      ]
+    };
+    
+    return mealPlans[workoutType] || [
+      'Pre-workout: Light, easily digestible carbs',
+      'Post-workout: Protein and carbs within 30 minutes',
+      'Hydration: Water before, during, and after'
+    ];
+  };
+
+  const getExerciseTips = (workoutType: string) => {
+    const tips: { [key: string]: string[] } = {
+      'Running': [
+        'Warm up with 5-10 minutes of walking',
+        'Land on midfoot, not heel',
+        'Keep your cadence around 180 steps per minute'
+      ],
+      'Weight Training': [
+        'Focus on proper form over heavy weight',
+        'Rest 48-72 hours between training same muscle groups',
+        'Progressive overload: gradually increase weight/reps'
+      ],
+      'Swimming': [
+        'Focus on breathing technique',
+        'Keep your body position horizontal',
+        'Start with shorter distances and build endurance'
+      ],
+      'Cycling': [
+        'Adjust bike fit properly to prevent injury',
+        'Maintain steady cadence (80-100 RPM)',
+        'Use gears efficiently on hills'
+      ],
+      'Yoga': [
+        'Listen to your body and don\'t force poses',
+        'Focus on breathing throughout practice',
+        'Use props when needed for proper alignment'
+      ],
+      'HIIT': [
+        'Work at 80-90% max effort during intervals',
+        'Allow complete rest between intervals',
+        'Limit HIIT sessions to 2-3 times per week'
+      ]
+    };
+    
+    return tips[workoutType] || [
+      'Start with proper warm-up',
+      'Maintain good form throughout',
+      'Cool down and stretch after workout'
+    ];
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!workout.type || !workout.duration || !workout.calories) {
+    if (!workout.type || !workout.duration) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields to log your workout.",
@@ -43,28 +124,33 @@ const WorkoutLogger = ({ onAddWorkout }: WorkoutLoggerProps) => {
 
     onAddWorkout({
       type: workout.type,
-      duration: parseInt(workout.duration),
-      calories: parseInt(workout.calories)
+      duration: parseInt(workout.duration)
     });
+
+    const mealPlan = getMealPlan(workout.type);
+    const exerciseTips = getExerciseTips(workout.type);
 
     toast({
       title: "Workout Logged! 🎉",
-      description: `Great job! You burned ${workout.calories} calories in ${workout.duration} minutes.`,
+      description: `Great ${workout.type} session! Check your recommendations below.`,
     });
 
-    setWorkout({ type: '', duration: '', calories: '' });
+    setWorkout({ type: '', duration: '' });
     setIsSubmitting(false);
   };
 
+  const selectedMealPlan = workout.type ? getMealPlan(workout.type) : [];
+  const selectedTips = workout.type ? getExerciseTips(workout.type) : [];
+
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-4xl mx-auto space-y-8">
       <Card className="p-8 bg-gradient-to-br from-white to-blue-50 shadow-xl hover:shadow-2xl transition-all duration-300">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full mb-4">
             <Activity className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Log Your Workout</h2>
-          <p className="text-gray-600">Track your progress and stay motivated!</p>
+          <p className="text-gray-600">Track your progress and get personalized recommendations!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -84,40 +170,21 @@ const WorkoutLogger = ({ onAddWorkout }: WorkoutLoggerProps) => {
             </Select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="duration" className="text-sm font-medium text-gray-700 flex items-center">
-                <Timer className="w-4 h-4 mr-2 text-green-500" />
-                Duration (minutes)
-              </Label>
-              <Input
-                id="duration"
-                type="number"
-                value={workout.duration}
-                onChange={(e) => setWorkout(prev => ({ ...prev, duration: e.target.value }))}
-                placeholder="30"
-                className="h-12 border-2 border-gray-200 focus:border-green-500 transition-colors"
-                min="1"
-                max="300"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="calories" className="text-sm font-medium text-gray-700 flex items-center">
-                <Heart className="w-4 h-4 mr-2 text-red-500" />
-                Calories Burned
-              </Label>
-              <Input
-                id="calories"
-                type="number"
-                value={workout.calories}
-                onChange={(e) => setWorkout(prev => ({ ...prev, calories: e.target.value }))}
-                placeholder="250"
-                className="h-12 border-2 border-gray-200 focus:border-red-500 transition-colors"
-                min="1"
-                max="2000"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="duration" className="text-sm font-medium text-gray-700 flex items-center">
+              <Timer className="w-4 h-4 mr-2 text-green-500" />
+              Duration (minutes)
+            </Label>
+            <Input
+              id="duration"
+              type="number"
+              value={workout.duration}
+              onChange={(e) => setWorkout(prev => ({ ...prev, duration: e.target.value }))}
+              placeholder="30"
+              className="h-12 border-2 border-gray-200 focus:border-green-500 transition-colors"
+              min="1"
+              max="300"
+            />
           </div>
 
           <Button 
@@ -138,6 +205,43 @@ const WorkoutLogger = ({ onAddWorkout }: WorkoutLoggerProps) => {
           </Button>
         </form>
       </Card>
+
+      {/* Recommendations */}
+      {workout.type && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
+          {/* Meal Plan Recommendations */}
+          <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+            <div className="flex items-center mb-4">
+              <Utensils className="w-6 h-6 mr-2 text-green-600" />
+              <h3 className="text-xl font-semibold text-green-800">Meal Plan for {workout.type}</h3>
+            </div>
+            <div className="space-y-3">
+              {selectedMealPlan.map((meal, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-gray-700">{meal}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Exercise Tips */}
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <div className="flex items-center mb-4">
+              <Activity className="w-6 h-6 mr-2 text-blue-600" />
+              <h3 className="text-xl font-semibold text-blue-800">{workout.type} Tips</h3>
+            </div>
+            <div className="space-y-3">
+              {selectedTips.map((tip, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-gray-700">{tip}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,7 +6,6 @@ interface Workout {
   id: number;
   type: string;
   duration: number;
-  calories: number;
   date: string;
 }
 
@@ -17,8 +16,8 @@ interface DashboardStatsProps {
 const DashboardStats = ({ workouts }: DashboardStatsProps) => {
   const totalWorkouts = workouts.length;
   const totalDuration = workouts.reduce((sum, workout) => sum + workout.duration, 0);
-  const totalCalories = workouts.reduce((sum, workout) => sum + workout.calories, 0);
   const avgDuration = totalWorkouts > 0 ? Math.round(totalDuration / totalWorkouts) : 0;
+  const uniqueWorkoutTypes = new Set(workouts.map(w => w.type)).size;
 
   const stats = [
     {
@@ -38,8 +37,8 @@ const DashboardStats = ({ workouts }: DashboardStatsProps) => {
       iconColor: 'text-green-500'
     },
     {
-      title: 'Calories Burned',
-      value: totalCalories,
+      title: 'Workout Types',
+      value: uniqueWorkoutTypes,
       icon: Heart,
       color: 'from-red-500 to-red-600',
       bgColor: 'bg-red-50',
